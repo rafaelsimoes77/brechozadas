@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Tipografia 100% limpa, proporcional e de altíssima legibilidade (estilo Enjoei / Nike) */
+    --font-syne: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+    --font-jakarta: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    --font-mono: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    --bg-concrete: #f6f4ef;
+    --ink: #121212;
+    --rust: #c93b1e;
+    --neon: #eeff33;
+  }
+
+  body {
+    background-color: #f6f4ef;
+    color: #141414;
+    font-family: var(--font-jakarta);
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.022em;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Textura sutil de concreto sem atrapalhar a leitura */
+.bg-concrete-grain {
+  background-image: radial-gradient(rgba(18, 18, 18, 0.04) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.bg-dark-grain {
+  background-color: #121212;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+/* Scrollbar limpa */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
