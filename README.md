@@ -70,3 +70,7 @@ node cli/brechozadas.mjs vender #BRZ-101
 6. **Cultura & Fortalecimento da Cena (`/revista` e `/acervo`):**
    - **Revista Cultural** com as editorias **Dissecando o Drop** e **Histórias da Quebrada**.
    - **Acervo & Styling** com locação de peças históricas por diária + **Rede Criativa** conectando brechós, stylists, fotógrafos e feiras locais.
+7. **Inovações V2 + Segurança Enterprise (`/kits` e `/seguranca`):**
+   - **Provador Virtual `"Vai Servir em Mim?"`**, **Montador de Kits (`/kits`)**, **Radar de Drops com Contagem Regressiva**, **Gerador PNG `9:16` p/ Stories** e **Auto-Preenchimento por Legenda do Instagram**.
+   - **Central de Segurança & Auditoria (`/seguranca`):** cabeçalhos OWASP (CSP, HSTS, Anti-CSRF, Rate Limit), inspeção binária de uploads (*Magic Bytes*) e trilha criptográfica **Hash-Chain SHA-256** com anonimização LGPD.
+   - Consulte também o manual completo em **`GUIA_VERCEL_CUSTOS_E_SEGURANCA.md`**.

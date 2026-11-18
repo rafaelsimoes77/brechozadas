@@ -41,6 +41,7 @@ export default function StorefrontPage({
     offers,
     respondOfferAsSeller,
     answerQuestionAsSeller,
+    triggerFlashPromo,
     updateStoreSettings,
     showToast,
   } = useMarketplace();
@@ -327,6 +328,35 @@ export default function StorefrontPage({
                     />
                   ))}
                 </div>
+
+                {/* Promo Relâmpago p/ quem Reliquiou */}
+                {allStoreProducts.some((p) => !p.isSold && p.mode === "venda") && (
+                  <div className="pt-3 border-t border-white/10 space-y-2">
+                    <p className="text-xs font-bold text-neon">
+                      ⚡ Converter Curtidas em Venda (-10% Relâmpago):
+                    </p>
+                    {allStoreProducts
+                      .filter((p) => !p.isSold && p.mode === "venda")
+                      .slice(0, 2)
+                      .map((prod) => (
+                        <div
+                          key={prod.id}
+                          className="flex items-center justify-between gap-2 bg-black/40 p-2 rounded-xl text-xs"
+                        >
+                          <span className="truncate">
+                            {prod.title} (♥ {prod.likes})
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => triggerFlashPromo(prod.id)}
+                            className="px-2.5 py-1 rounded-lg bg-rust text-white font-bold text-[11px] shrink-0"
+                          >
+                            Dar -10%
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
 
               {/* 2. Ofertas Recebidas */}

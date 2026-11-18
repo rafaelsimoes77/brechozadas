@@ -12,6 +12,7 @@ import {
   SceneMember,
   EditorialStory,
 } from "@/data/mockData";
+import { AuditLogEntry, createAuditEntry } from "@/lib/security";
 
 export interface OfferRecord {
   productId: string;
@@ -62,7 +63,11 @@ export interface DatabaseSchema {
   orders: OrderRecord[];
   sceneMembers: SceneMember[];
   stories: EditorialStory[];
+  auditLogs: AuditLogEntry[];
 }
+
+export const GENESIS_PREV_HASH =
+  "0000000000000000000000000000000000000000000000000000000000000000";
 
 export function resolveProjectRoot(): string {
   const cwd = process.cwd();
@@ -77,7 +82,6 @@ export function resolveProjectRoot(): string {
 }
 
 export function getDbPath(): string {
-  // Em ambiente Serverless (Vercel), /var/task é somente-leitura, então usamos os.tmpdir()
   if (process.env.VERCEL === "1") {
     return path.join(os.tmpdir(), "brechozadas-db.json");
   }
@@ -85,6 +89,15 @@ export function getDbPath(): string {
 }
 
 export function createInitialSeed(): DatabaseSchema {
+  const genesis = createAuditEntry(GENESIS_PREV_HASH, {
+    action: "SYSTEM_GENESIS",
+    actor: "BRECHOZADAS Security Core",
+    target: "ledger/v2",
+    details:
+      "Trilha de auditoria criptográfica SHA-256 inicializada com proteções OWASP e anonimização LGPD.",
+    rawIp: "127.0.0.1",
+  });
+
   return {
     products: structuredClone(INITIAL_PRODUCTS),
     stores: structuredClone(STORES),
@@ -92,16 +105,48 @@ export function createInitialSeed(): DatabaseSchema {
     orders: [],
     sceneMembers: structuredClone(SCENE_NETWORK),
     stories: structuredClone(EDITORIAL_STORIES),
+    auditLogs: [genesis],
   };
+}
+
+export function appendAudit(
+  db: DatabaseSchema,
+  params: {
+    action: AuditLogEntry["action"];
+    actor: string;
+    target: string;
+    details: string;
+    rawIp?: string | null;
+  }
+): AuditLogEntry {
+  if (!Array.isArray(db.auditLogs) || db.auditLogs.length === 0) {
+    const genesis = createAuditEntry(GENESIS_PREV_HASH, {
+      action: "SYSTEM_GENESIS",
+      actor: "BRECHOZADAS Security Core",
+      target: "ledger/v2",
+      details: "Inicialização automática da trilha de auditoria.",
+      rawIp: "127.0.0.1",
+    });
+    db.auditLogs = [genesis];
+  }
+
+  const prevHash = db.auditLogs[0].integrityHash;
+  const entry = createAuditEntry(prevHash, params);
+  db.auditLogs.unshift(entry);
+  // Mantém os últimos 200 eventos encadeados caso escale muito, ou preserva todos para verificação completa
+  return entry;
 }
 
 export async function readDb(): Promise<DatabaseSchema> {
   const dbPath = getDbPath();
   try {
     const raw = await fs.readFile(dbPath, "utf-8");
-    return JSON.parse(raw) as DatabaseSchema;
+    const parsed = JSON.parse(raw) as DatabaseSchema;
+    if (!Array.isArray(parsed.auditLogs) || parsed.auditLogs.length === 0) {
+      parsed.auditLogs = createInitialSeed().auditLogs;
+    }
+    return parsed;
   } catch {
-    // Em Vercel, tenta primeiro copiar data/db.json empacotado no deploy antes do seed padrão
     if (process.env.VERCEL === "1") {
       try {
         const bundled = await fs.readFile(
@@ -109,6 +154,9 @@ export async function readDb(): Promise<DatabaseSchema> {
           "utf-8"
         );
         const parsed = JSON.parse(bundled) as DatabaseSchema;
+        if (!Array.isArray(parsed.auditLogs) || parsed.auditLogs.length === 0) {
+          parsed.auditLogs = createInitialSeed().auditLogs;
+        }
         await writeDb(parsed);
         return parsed;
       } catch {}

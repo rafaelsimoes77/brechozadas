@@ -45,6 +45,7 @@ interface MarketplaceContextType {
     questionId: string,
     answer: string
   ) => Promise<void>;
+  triggerFlashPromo: (productId: string) => Promise<void>;
   publishProduct: (
     newProduct: Omit<Product, "id" | "slug" | "code" | "likes" | "questions" | "isSold">
   ) => Promise<string>;
@@ -308,6 +309,23 @@ export function MarketplaceProvider({
     }
   };
 
+  const triggerFlashPromo = async (productId: string) => {
+    const res = await fetch(`/api/products/${productId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "flashPromo" }),
+    });
+    const data = await res.json();
+    if (data.ok && data.product) {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === productId ? data.product : p))
+      );
+      showToast(
+        `⚡ Oferta Relâmpago (-10% → R$ ${data.product.price}) disparada para os ${data.product.likes} interessados!`
+      );
+    }
+  };
+
   const publishProduct = async (
     newProd: Omit<
       Product,
@@ -447,6 +465,7 @@ export function MarketplaceProvider({
         respondOfferAsSeller,
         addQuestion,
         answerQuestionAsSeller,
+        triggerFlashPromo,
         publishProduct,
         createStore,
         completeCheckout,

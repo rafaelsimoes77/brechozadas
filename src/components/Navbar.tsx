@@ -60,7 +60,8 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/explorar", label: "Explorar" },
-    { href: "/brechos", label: "Brechós da Cena" },
+    { href: "/kits", label: "Montar Kit" },
+    { href: "/brechos", label: "Brechós" },
     { href: "/acervo", label: "Acervo & Rede" },
     { href: "/revista", label: "Revista" },
     { href: "/pedidos", label: "Pedidos" },

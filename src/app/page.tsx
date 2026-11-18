@@ -17,6 +17,7 @@ import {
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { ProductCard } from "@/components/ProductCard";
 import { ScribbleUnderline } from "@/components/BrandLogo";
+import { DropRadarSection } from "@/components/DropRadarSection";
 import {
   BRANDS_LIST,
   PRICE_RANGES,
@@ -283,6 +284,31 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 3.5 RADAR DE DROPS AO VIVO + CHAMADA MONTADOR DE KITS */}
+      <DropRadarSection />
+
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-rust text-white rounded-3xl border-2 border-ink p-6 sm:p-8 shadow-urban flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-2xl">
+            <span className="inline-block bg-neon text-ink text-xs font-extrabold px-3 py-1 rounded-full">
+              NOVO • PROVADOR DE OUTFITS DA CENA
+            </span>
+            <h2 className="font-display font-extrabold text-2xl sm:text-3xl">
+              Monte o Kit Completo (Peça Base + Jaqueta + Pisante) com até 15% OFF!
+            </h2>
+            <p className="text-sm text-white/90">
+              Visualize as peças lado a lado antes de comprar ou leve um dos kits prontos assinados pelos stylists.
+            </p>
+          </div>
+          <Link
+            href="/kits"
+            className="px-6 py-3.5 rounded-full bg-ink text-neon font-bold text-sm shrink-0 hover:opacity-95 text-center shadow-urban-sm"
+          >
+            Abrir Montador de Kits →
+          </Link>
+        </div>
+      </section>
+
       {/* 4. VITRINE PRINCIPAL ESTILO ENJOEI (FILTRÁVEL AO VIVO) */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
@@ -365,7 +391,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {stores.map((st) => (
             <Link
               key={st.slug}

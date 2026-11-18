@@ -45,8 +45,18 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/kits" className="hover:text-white text-neon font-semibold">
+                Montador de Kits (15% OFF)
+              </Link>
+            </li>
+            <li>
               <Link href="/brechos" className="hover:text-white">
                 Páginas dos Brechós da Cena
+              </Link>
+            </li>
+            <li>
+              <Link href="/seguranca" className="hover:text-white">
+                Segurança, LGPD & Auditoria
               </Link>
             </li>
           </ul>

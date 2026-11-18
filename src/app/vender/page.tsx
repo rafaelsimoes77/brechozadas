@@ -58,6 +58,51 @@ export default function VenderAndProPage() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [storeSlug, setStoreSlug] = useState(stores[0]?.slug || "acervodoreliquia");
   const [story, setStory] = useState("");
+  const [igCaptionRaw, setIgCaptionRaw] = useState("");
+
+  const handleAutoFillFromCaption = () => {
+    if (!igCaptionRaw.trim()) return;
+    const txt = igCaptionRaw;
+    const szMatch = txt.match(/tam(?:anho)?\s*[:\-]?\s*(PP|P|M|G|GG|38|40|41|42)/i);
+    if (szMatch) setSize(szMatch[1].toUpperCase() as Product["size"]);
+
+    const prMatch =
+      txt.match(/R\$\s*(\d+(?:[.,]\d{1,2})?)/i) ||
+      txt.match(/(\d+(?:[.,]\d{1,2})?)\s*\$/);
+    if (prMatch) setPrice(Math.round(parseFloat(prMatch[1].replace(",", "."))));
+
+    const dimMatch = txt.match(/(\d{2})\s*[xX×]\s*(\d{2})/);
+    if (dimMatch) {
+      setLargura(`${dimMatch[1]} cm`);
+      setComprimento(`${dimMatch[2]} cm`);
+    }
+
+    const brands = [
+      "Ecko Unltd.",
+      "Polo Ralph Lauren",
+      "Nike",
+      "Adidas",
+      "Ed Hardy",
+      "Alpinestars",
+      "Mizuno",
+      "Carhartt",
+    ];
+    for (const b of brands) {
+      if (txt.toLowerCase().includes(b.split(" ")[0].toLowerCase())) {
+        setBrand(b);
+        break;
+      }
+    }
+
+    const cleanHeadline = txt
+      .split(/[|\n]/)[0]
+      .replace(/[^\p{L}\p{N}\s#\-/.]/gu, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (cleanHeadline) setTitle(cleanHeadline);
+    setStory(txt.trim());
+    showToast("✨ Campos preenchidos automaticamente pela legenda!");
+  };
 
   // Estado Criar Página de Brechó
   const [newStoreName, setNewStoreName] = useState("");
@@ -442,9 +487,31 @@ export default function VenderAndProPage() {
                   Cadastrar Nova Relíquia na Vitrine
                 </h2>
                 <p className="text-xs text-concrete-500 mt-0.5">
-                  Suba uma foto direto do seu computador (ou escolha uma foto de
-                  demonstração) e publique!
+                  Suba uma foto direto do seu computador ou cole a legenda do seu Instagram para preencher tudo em 1 segundo!
                 </p>
+              </div>
+
+              {/* Auto-Preenchimento Inteligente por Legenda do Instagram */}
+              <div className="p-3.5 rounded-2xl bg-neon/30 border border-ink space-y-2">
+                <label className="block text-xs font-extrabold text-ink">
+                  ✨ Atalho Rápido: Cole uma legenda do seu Instagram
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={igCaptionRaw}
+                    onChange={(e) => setIgCaptionRaw(e.target.value)}
+                    placeholder="Ex: 👕 Pólo Ecko Silver | Tam G | 61x75cm | R$ 65,00"
+                    className="flex-1 h-9 px-3 rounded-xl bg-white border border-concrete-300 text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAutoFillFromCaption}
+                    className="h-9 px-4 rounded-xl bg-ink text-neon text-xs font-bold shrink-0"
+                  >
+                    Auto-Preencher
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

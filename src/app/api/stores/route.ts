@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readDb, writeDb } from "@/lib/db";
+import { readDb, writeDb, appendAudit } from "@/lib/db";
+import { sanitizeText, validateHexColor } from "@/lib/security";
 import { Store } from "@/data/mockData";
 
 export async function GET() {
@@ -9,17 +10,18 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  if (!body.name || !body.handle) {
+  const cleanName = sanitizeText(body.name, 70);
+  const rawHandle = sanitizeText(body.handle, 40);
+
+  if (!cleanName || !rawHandle) {
     return NextResponse.json(
-      { ok: false, error: "Informe nome e @handle do brechó" },
+      { ok: false, error: "Informe nome e @handle válidos do brechó" },
       { status: 400 }
     );
   }
 
   const db = await readDb();
-  const cleanHandle = String(body.handle).startsWith("@")
-    ? String(body.handle).trim()
-    : `@${String(body.handle).trim()}`;
+  const cleanHandle = rawHandle.startsWith("@") ? rawHandle : `@${rawHandle}`;
 
   const slug = cleanHandle
     .replace(/^@/, "")
@@ -27,7 +29,7 @@ export async function POST(req: NextRequest) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-  if (db.stores.some((s) => s.slug === slug)) {
+  if (!slug || db.stores.some((s) => s.slug === slug)) {
     return NextResponse.json(
       { ok: false, error: "Já existe um brechó com esse identificador" },
       { status: 409 }
@@ -36,31 +38,27 @@ export async function POST(req: NextRequest) {
 
   const created: Store = {
     slug,
-    name: String(body.name).trim(),
+    name: cleanName,
     handle: cleanHandle,
     tagline:
-      String(body.tagline || "").trim() ||
+      sanitizeText(body.tagline, 120) ||
       "Curadoria autoral de moda urbana no BRECHOZADAS",
     bio:
-      String(body.bio || "").trim() ||
+      sanitizeText(body.bio, 400) ||
       "Loja oficial cadastrada no BRECHOZADAS. Peças únicas, envio rápido para todo o Brasil e retirada combinada nas estações.",
-    location: String(body.location || "São Paulo • SP").trim(),
+    location: sanitizeText(body.location, 80) || "São Paulo • SP",
     verified: true,
     isPro: Boolean(body.isPro),
-    accentColor: body.accentColor || "#C93B1E",
+    accentColor: validateHexColor(body.accentColor, "#C93B1E"),
     bannerGradient: "from-ink via-zinc-900 to-rust/85",
     followers: 1,
     soldCount: 0,
     rating: 5.0,
     responseTime: "Responde rápido",
-    whatsapp: String(body.whatsapp || "5511999990000").replace(/\D/g, ""),
+    whatsapp: sanitizeText(body.whatsapp, 20).replace(/\D/g, "") || "5511999990000",
     instagram: `https://www.instagram.com/${cleanHandle.replace(/^@/, "")}/`,
-    stations: body.stations?.length
-      ? body.stations
-      : ["Estações Metrô/CPTM SP & ABC"],
-    specialties: body.specialties?.length
-      ? body.specialties
-      : ["Garimpo Urbano", "Peças Únicas"],
+    stations: ["Estações Metrô/CPTM SP & ABC"],
+    specialties: ["Garimpo Urbano", "Peças Únicas"],
     highlights: [
       { title: "Primeiro Drop", subtitle: "Novidades no ar", emoji: "🔥" },
       { title: "Envios", subtitle: "Brasil + Estações SP", emoji: "🚝" },
@@ -68,6 +66,13 @@ export async function POST(req: NextRequest) {
   };
 
   db.stores.push(created);
+  appendAudit(db, {
+    action: "STORE_CREATED",
+    actor: cleanHandle,
+    target: `/brecho/${slug}`,
+    details: `Nova loja criada (${created.isPro ? "Plano PRO 0%" : "Modo Direto 10%"}).`,
+    rawIp: req.headers.get("x-forwarded-for"),
+  });
   await writeDb(db);
 
   return NextResponse.json({ ok: true, store: created }, { status: 201 });
@@ -75,7 +80,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const body = await req.json();
-  const { storeSlug, accentColor, isPro, followDelta, tagline, bio } = body;
+  const storeSlug = sanitizeText(body.storeSlug, 60);
 
   const db = await readDb();
   const store = db.stores.find((s) => s.slug === storeSlug);
@@ -86,13 +91,28 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  if (accentColor) store.accentColor = accentColor;
-  if (typeof isPro === "boolean") store.isPro = isPro;
-  if (typeof followDelta === "number") {
-    store.followers = Math.max(0, store.followers + followDelta);
+  if (body.accentColor) {
+    store.accentColor = validateHexColor(body.accentColor, store.accentColor);
   }
-  if (typeof tagline === "string") store.tagline = tagline;
-  if (typeof bio === "string") store.bio = bio;
+  if (typeof body.isPro === "boolean") store.isPro = body.isPro;
+  if (typeof body.followDelta === "number") {
+    const delta = body.followDelta > 0 ? 1 : -1;
+    store.followers = Math.max(0, store.followers + delta);
+  }
+  if (typeof body.tagline === "string") {
+    store.tagline = sanitizeText(body.tagline, 120);
+  }
+  if (typeof body.bio === "string") {
+    store.bio = sanitizeText(body.bio, 400);
+  }
+
+  appendAudit(db, {
+    action: "STORE_UPDATED",
+    actor: store.handle,
+    target: `/brecho/${store.slug}`,
+    details: `Configurações atualizadas (PRO=${store.isPro}, cor=${store.accentColor}).`,
+    rawIp: req.headers.get("x-forwarded-for"),
+  });
 
   await writeDb(db);
   return NextResponse.json({ ok: true, store });

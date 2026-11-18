@@ -18,6 +18,9 @@ import {
 } from "lucide-react";
 import { useMarketplace } from "@/context/MarketplaceContext";
 import { ProductCard } from "@/components/ProductCard";
+import { SmartFitMatcher } from "@/components/SmartFitMatcher";
+import { StoryCardGeneratorModal } from "@/components/StoryCardGeneratorModal";
+import { Instagram } from "lucide-react";
 
 export default function ProductDetailPage({
   params,
@@ -38,6 +41,7 @@ export default function ProductDetailPage({
 
   const product = products.find((p) => p.slug === slug);
   const [offerModalOpen, setOfferModalOpen] = useState(false);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
   const [offerAmount, setOfferAmount] = useState<number>(0);
   const [questionText, setQuestionText] = useState("");
   const [questionUser, setQuestionUser] = useState("");
@@ -268,20 +272,28 @@ export default function ProductDetailPage({
                   )}
                 </div>
 
-                {/* Botão Híbrido WhatsApp / DM pedido pelo usuário */}
-                {store && (
-                  <a
-                    href={`https://wa.me/${store.whatsapp}?text=${whatsappMessage}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-concrete-100 hover:bg-emerald-700 hover:text-white text-ink border border-concrete-300 text-xs font-bold flex items-center justify-center gap-2 transition-colors"
+                {/* Botão Híbrido WhatsApp / DM + Gerador de Card p/ Stories */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {store && (
+                    <a
+                      href={`https://wa.me/${store.whatsapp}?text=${whatsappMessage}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="py-3 px-4 rounded-xl bg-concrete-100 hover:bg-emerald-700 hover:text-white text-ink border border-concrete-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4 shrink-0" />
+                      <span className="truncate">WhatsApp / DM {store.handle}</span>
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setStoryModalOpen(true)}
+                    className="py-3 px-4 rounded-xl bg-ink text-neon hover:opacity-90 text-xs font-bold flex items-center justify-center gap-1.5 transition-opacity"
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>
-                      Tirar dúvida direto no WhatsApp / DM de {store.handle}
-                    </span>
-                  </a>
-                )}
+                    <Instagram className="w-4 h-4 shrink-0" />
+                    <span>Gerar Card p/ Story (PNG)</span>
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="p-4 rounded-xl bg-concrete-100 text-center text-xs font-mono text-concrete-500">
@@ -328,6 +340,9 @@ export default function ProductDetailPage({
                   </div>
                 )}
               </div>
+
+              {/* Provador Virtual Inteligente */}
+              <SmartFitMatcher product={product} />
             </div>
 
             {/* História da Peça */}
@@ -461,6 +476,15 @@ export default function ProductDetailPage({
           ))}
         </div>
       </section>
+
+      {/* Modal Gerador de Arte 9:16 p/ Stories */}
+      {storyModalOpen && (
+        <StoryCardGeneratorModal
+          product={product}
+          store={store}
+          onClose={() => setStoryModalOpen(false)}
+        />
+      )}
 
       {/* Modal Interativo "Fazer Oferta" (Estilo Enjoei) */}
       {offerModalOpen && (

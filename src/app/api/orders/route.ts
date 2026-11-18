@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readDb, writeDb, OrderRecord, SellerPayout } from "@/lib/db";
+import {
+  readDb,
+  writeDb,
+  appendAudit,
+  OrderRecord,
+  SellerPayout,
+} from "@/lib/db";
+import { sanitizeText } from "@/lib/security";
 
 export async function GET() {
   const db = await readDb();
@@ -9,7 +16,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const productIds: string[] = Array.isArray(body.productIds)
-    ? body.productIds
+    ? body.productIds.slice(0, 20).map((id: unknown) => sanitizeText(id, 60))
     : [];
 
   if (productIds.length === 0) {
@@ -20,6 +27,7 @@ export async function POST(req: NextRequest) {
   }
 
   const db = await readDb();
+  // Preços são SEMPRE calculados no servidor a partir do banco (imune a manipulação no navegador!)
   const items = db.products.filter(
     (p) => productIds.includes(p.id) && !p.isSold
   );
@@ -39,7 +47,6 @@ export async function POST(req: NextRequest) {
   const shippingCost = deliveryMethod === "correios" ? 16 : 0;
   const total = Math.max(0, subtotal - discountValue + shippingCost);
 
-  // Calcula repasse líquido por brechó (PRO = 0% taxa | Direto = 10% taxa)
   const payoutsMap = new Map<string, SellerPayout>();
   for (const item of items) {
     const store = db.stores.find((s) => s.slug === item.storeSlug);
@@ -61,7 +68,6 @@ export async function POST(req: NextRequest) {
     current.netSeller += net;
     payoutsMap.set(item.storeSlug, current);
 
-    // Baixa automática na peça única + soma vendas do brechó
     if (item.mode === "venda") {
       item.isSold = true;
     }
@@ -89,13 +95,21 @@ export async function POST(req: NextRequest) {
     total,
     deliveryMethod,
     deliveryDetail:
-      body.deliveryDetail || "Linha 15-Prata • Estação São Mateus",
+      sanitizeText(body.deliveryDetail, 120) ||
+      "Linha 15-Prata • Estação São Mateus",
     paymentMethod: body.paymentMethod === "Cartão" ? "Cartão" : "PIX",
     sellerPayouts: Array.from(payoutsMap.values()),
     createdAt: new Date().toLocaleString("pt-BR"),
   };
 
   db.orders.unshift(order);
+  appendAudit(db, {
+    action: "ORDER_COMPLETED_PIX",
+    actor: "comprador-verificado",
+    target: order.code,
+    details: `Pedido liquidado por R$ ${order.total} (${items.length} peças, split calculado no servidor).`,
+    rawIp: req.headers.get("x-forwarded-for"),
+  });
   await writeDb(db);
 
   return NextResponse.json(

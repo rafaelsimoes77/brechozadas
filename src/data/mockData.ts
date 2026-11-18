@@ -92,11 +92,35 @@ export interface SceneMember {
   id: string;
   name: string;
   handle: string;
-  role: "Brechó Parceiro" | "Styling & Direção" | "Foto & Handcam" | "Evento / Feira";
+  role:
+    | "Brechó Parceiro"
+    | "Styling & Direção"
+    | "Foto & Handcam"
+    | "Evento / Feira";
   region: string;
   bio: string;
   tags: string[];
   availableForCollab: boolean;
+}
+
+export interface DropScheduleItem {
+  id: string;
+  title: string;
+  storeSlug: string;
+  storeHandle: string;
+  dayLabel: string;
+  hoursFromNow: number;
+  previewCount: number;
+  themeTag: string;
+  accentColor: string;
+}
+
+export interface CuratedKit {
+  id: string;
+  title: string;
+  curator: string;
+  vibe: string;
+  productIds: string[];
 }
 
 export const STORES: Store[] = [
@@ -105,7 +129,7 @@ export const STORES: Store[] = [
     name: "Acervo do Relíquia",
     handle: "@acervodoreliquia",
     tagline: "Observatório de Moda • Pesquisa e Produção - Moda de Quebrada",
-    bio: "Brechó, acervo vivo de memória periférica e styling. Do Monotrilho São Mateus ao ABC Paulista, resgatando polos clássicas, camisas de time, racing e a estética real dos bailes e rolezinhos.",
+    bio: "Brechó, acervo de memória periférica e styling criado por @1renas_tinho e @cruela__. Das plataformas da Linha 15-Prata (São Mateus) e ABC Paulista até exposições no Museu da Língua Portuguesa e CineSesc.",
     location: "São Mateus (ZL) & Mauá (ABC) • SP",
     verified: true,
     isPro: true,
@@ -128,78 +152,128 @@ export const STORES: Store[] = [
       { title: "Drop Linha 15", subtitle: "Disponíveis da semana", emoji: "🚝" },
       { title: "Acervo & Clipes", subtitle: "Locação por diária", emoji: "🎬" },
       { title: "Quarto de Menina", subtitle: "Curadoria Y2K @cruela__", emoji: "💋" },
-      { title: "Regras & Envios", subtitle: "Correios + Estações SP", emoji: "📦" },
+      { title: "Fluxo Relíquias", subtitle: "Exposições & Pesquisa", emoji: "🏛️" },
     ],
   },
   {
     slug: "bonfire-brecho",
-    name: "Bonfire Brechó",
+    name: "Brechó Bonfire",
     handle: "@bonfire_brecho",
-    tagline: "Y2K, Cybershot vibes, jeans cintura baixa & achados anos 2000",
-    bio: "Garimpo feminino e unissex inspirado na era Orkut, Fotolog e rolezinhos de shopping. Peças higienizadas, medidas reais e envio rápido para todo Brasil.",
-    location: "Zona Leste • São Paulo, SP",
+    tagline: "Revival Vintage & Second Hand • Especializado em Ed Hardy e C.A!",
+    bio: "De São Paulo para todo o Brasil. Curadoria pesada em Y2K, Christian Audigier, Ed Hardy, jorts, couro, bolsas anos 2000, Oakley, Cavalera e peças boxy.",
+    location: "São Paulo • Envio p/ todo Brasil",
     verified: true,
     isPro: true,
     accentColor: "#B83280",
     bannerGradient: "from-zinc-900 via-fuchsia-950 to-pink-800",
-    followers: 3490,
-    soldCount: 228,
-    rating: 4.92,
-    responseTime: "Responde em ~30 min",
+    followers: 6138,
+    soldCount: 540,
+    rating: 4.96,
+    responseTime: "Responde em ~20 min",
     whatsapp: "5511988881111",
     instagram: "https://www.instagram.com/bonfire_brecho/",
-    stations: ["Linha 3-Vermelha (Tatuapé / Corinthians-Itaquera)", "Estação Brás"],
-    specialties: ["Y2K Feminino", "Baby Tees", "Jeans Anos 2000", "Bolsas Vintage"],
+    stations: ["Linha 3-Vermelha (Tatuapé / República)", "Envio Nacional Correios"],
+    specialties: ["Ed Hardy & C.A.", "Y2K & Baby Tees", "Jorts & Couro", "Precinho"],
     highlights: [
-      { title: "Drop Y2K", subtitle: "Peças a partir de R$ 35", emoji: "✨" },
-      { title: "Collab Relíquia", subtitle: "Editorial Quarto de Menina", emoji: "📸" },
+      { title: "ED HARDY", subtitle: "Raridades Christian Audigier", emoji: "🦅" },
+      { title: "JORTS & Y2K", subtitle: "Modelagem anos 2000", emoji: "✨" },
+      { title: "ESPORTE OG", subtitle: "Peças clássicas", emoji: "🔥" },
     ],
   },
   {
     slug: "brecho-dimil",
-    name: "Brechó DiMil",
+    name: "Brechó Dimil 💎⛏",
     handle: "@brechodimil",
-    tagline: "Streetwear pesado 90s, rap nacional, camisas largas & pisantes",
-    bio: "Especialista em modelagem baggy, camisas de basquete/futebol, jaquetas corta-vento e clássicos da cultura hip-hop paulistana.",
-    location: "Santo André • ABC Paulista",
+    tagline: "OutFits Hip-Hop, Streetwear 90s, Workwear & Pisantes OG",
+    bio: "Loja física na Rua Dom José de Barros 337 (Sala 101, República - SP) por @mendesculpa. Flat-lays completos de OutFit Hip-Hop, Carhartt, Dickies, Kangol, camisas de time e pisantes clássicos com medidas exatas em cm.",
+    location: "República • Centro de SP",
     verified: true,
     isPro: true,
     accentColor: "#1D4ED8",
     bannerGradient: "from-slate-950 via-blue-950 to-zinc-900",
-    followers: 4150,
-    soldCount: 309,
-    rating: 4.95,
+    followers: 13288,
+    soldCount: 890,
+    rating: 4.97,
     responseTime: "Responde em ~20 min",
     whatsapp: "5511977772222",
     instagram: "https://www.instagram.com/brechodimil/",
-    stations: ["Estação Prefeito Saladino / Santo André (CPTM)", "Estação Tamanduateí"],
-    specialties: ["FUBU & Ecko", "Calças Cargo", "Pisantes Anos 2010", "Rap 90s"],
+    stations: ["Estação República (Linhas Vermelha e Amarela)", "Loja Física Sala 101"],
+    specialties: ["OutFits Hip-Hop", "Carhartt & Dickies", "Boinas Kangol", "Air Max & Cortez"],
     highlights: [
-      { title: "Pesados GG/XGG", subtitle: "Modelagem chavosa", emoji: "🔥" },
-      { title: "Pisantes", subtitle: "Molas & Runners", emoji: "👟" },
+      { title: "TENIS&AFINS", subtitle: "Nike OG & Runners", emoji: "👟" },
+      { title: "CALÇAS/BERMAS", subtitle: "Bermudão Jeans & Jorts", emoji: "💎" },
+      { title: "CAMISAS TIME", subtitle: "Clubes & Seleções", emoji: "⚽" },
     ],
   },
   {
     slug: "relicario-oz",
-    name: "Relicário OZ",
+    name: "Relicari.Oz",
     handle: "@relicari.oz",
-    tagline: "Garimpo esportivo de quebrada, corta-ventos & camisas históricas",
-    bio: "Direto de Osasco conectando Oeste, Leste e ABC. Curadoria focada em Nike Total 90, Adidas vintage, Mizuno e agasalhos de clube.",
-    location: "Osasco • Grande SP",
+    tagline: "Drops toda Terça • Acervo, Styling & Espaço Físico @estacao.202",
+    bio: "Garimpo e acervo de figurino direto de Osasco (@estacao.202). Atualizações toda terça-feira divididas em Fem/Masc e produções de styling para artistas e eventos como Linha Diamante e KondZilla.",
+    location: "Osasco (@estacao.202) • Grande SP",
     verified: true,
-    isPro: false,
+    isPro: true,
     accentColor: "#15803D",
     bannerGradient: "from-neutral-950 via-emerald-950 to-neutral-900",
-    followers: 2780,
-    soldCount: 164,
-    rating: 4.89,
-    responseTime: "Responde em ~1h",
+    followers: 1730,
+    soldCount: 215,
+    rating: 4.94,
+    responseTime: "Responde em ~30 min",
     whatsapp: "5511966663333",
     instagram: "https://www.instagram.com/relicari.oz/",
     stations: ["Estação Osasco (CPTM)", "Pinheiros (Linha 4-Amarela)"],
-    specialties: ["Camisas de Time", "Nike Dri-Fit", "Agasalhos Europeus"],
+    specialties: ["Drops de Terça", "Fem & Masc", "Acervo p/ Artistas", "Styling"],
     highlights: [
-      { title: "Total 90", subtitle: "Futebol anos 2000", emoji: "⚽" },
+      { title: "Drop de Terça", subtitle: "Fem & Masc Disponíveis", emoji: "🤯" },
+      { title: "ACERVO", subtitle: "Styling & Produções", emoji: "🎬" },
+    ],
+  },
+  {
+    slug: "garde-brecho",
+    name: "GARDÊ Brechó Noturno",
+    handle: "@gardebrecho_",
+    tagline: "Desde 2009 em Osasco • Brechó Noturno, Arte & Espaço Cultural",
+    bio: "Referência histórica desde 2009 no bairro Pestana (Rua São Jorge, 515 - Osasco). Brechó noturno (Qui a Sáb 18h-23h, Dom 15h-21h) integrado à @KasaGarde e @GaleriaLuneta com moda vintage, calçados em couro, oficinas e cultura.",
+    location: "Pestana • Osasco, SP",
+    verified: true,
+    isPro: false,
+    accentColor: "#92400E",
+    bannerGradient: "from-stone-950 via-amber-950 to-neutral-900",
+    followers: 19528,
+    soldCount: 1420,
+    rating: 4.99,
+    responseTime: "Atendimento Qui a Dom",
+    whatsapp: "5511955554444",
+    instagram: "https://www.instagram.com/gardebrecho_/",
+    stations: ["Rua São Jorge, 515 - Pestana (Osasco)", "Estação Comandante Sampaio / Osasco"],
+    specialties: ["Vintage Clássico", "Couro & Brogues", "Brechó Noturno", "Oficinas"],
+    highlights: [
+      { title: "!!HOJE!!", subtitle: "Garimpo Noturno Aberto", emoji: "🌙" },
+      { title: "OFICINA", subtitle: "Arte & Customização", emoji: "🎨" },
+    ],
+  },
+  {
+    slug: "brecho-dos-bari",
+    name: "BDB • Brechó dos Bari 🥭",
+    handle: "@brechodosbari",
+    tagline: "Cola pra ficar na beca com os Bari 🥭 • Streetwear & Esporte",
+    bio: "Direto da Rua dos Salmos 70 (IAPI - Osasco). Bermas esportivas, Under Armour, Abercrombie, camisetas de quebrada e artes gráficas colaborativas com entrega p/ todo Brasil.",
+    location: "IAPI • Osasco, SP",
+    verified: true,
+    isPro: false,
+    accentColor: "#EA580C",
+    bannerGradient: "from-zinc-950 via-orange-950 to-zinc-900",
+    followers: 271,
+    soldCount: 64,
+    rating: 4.91,
+    responseTime: "Responde rápido na DM",
+    whatsapp: "5511944445555",
+    instagram: "https://www.instagram.com/brechodosbari/",
+    stations: ["IAPI Osasco", "Estação Osasco CPTM"],
+    specialties: ["Bermas Esportivas", "Under Armour", "Garimpo Raiz 🥭"],
+    highlights: [
+      { title: "Destaques 🥭", subtitle: "Peças na beca", emoji: "🥭" },
     ],
   },
 ];
@@ -242,7 +316,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         id: "q1",
         user: "@kaue_zl",
         text: "Salve! Ela tem algum desbotado na gola ou tá zero?",
-        answer: "Salve relíquia! Tá zero bala, cor firme na gola e bordado intacto. Pronta pro baile!",
+        answer:
+          "Salve relíquia! Tá zero bala, cor firme na gola e bordado intacto. Pronta pro baile!",
         date: "há 2 horas",
       },
     ],
@@ -315,7 +390,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         id: "q2",
         user: "@gui.santoandre",
         text: "Consegue entregar na estação Tamanduateí ou São Mateus amanhã?",
-        answer: "Consigo sim mano! Só fechar marcando a opção 'Trombar na Estação' na sacolinha que combinamos o horário.",
+        answer:
+          "Consigo sim mano! Só fechar marcando a opção 'Trombar na Estação' na sacolinha que combinamos o horário.",
         date: "ontem",
       },
     ],
@@ -357,16 +433,17 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "p5",
     slug: "conjunto-quarto-de-menina-y2k-baby-tee-denim",
     code: "#BRZ-105",
-    title: "Kit Y2K Quarto de Menina: Baby Tee + Mini Saia Jeans",
-    brand: "Y2K Garimpo",
+    title: "Kit Revival Y2K: Baby Tee Estampada + Mini Saia Jeans",
+    brand: "Ed Hardy / Y2K",
     category: "Quarto de Menina / Y2K",
     size: "P",
     fit: "Justo (Baby Look)",
     measurements: {
-      largura: "43 cm (blusa) • Cintura 72 cm (saia)",
-      comprimento: "48 cm (blusa) • 33 cm (saia)",
+      largura: "44 cm",
+      comprimento: "49 cm",
+      extra: "Saia Cintura 72 cm",
     },
-    condition: "9.5/10 • Curadoria Especial",
+    condition: "9.5/10 • Curadoria Bonfire",
     price: 75,
     originalPrice: 110,
     mode: "venda",
@@ -377,7 +454,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     likes: 81,
     image: "/images/peca-y2k-feminino.jpg",
     storyBehindPiece:
-      "Direto da estética do editorial 'Quarto de Menina': nostalgia Orkut, Cybershot na bolsa e lavagem escura anos 2000 que veste perfeitamente.",
+      "Direto da curadoria Y2K em parceria com @bonfire_brecho no editorial 'Quarto de Menina': nostalgia anos 2000, Cybershot na bolsa e lavagem escura impecável.",
     credits: {
       photo: "@cruela__",
       styling: "@bonfire_brecho",
@@ -389,16 +466,17 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "p6",
     slug: "tenis-runner-wave-prata-neon-anos-2010",
     code: "#BRZ-106",
-    title: "Pisante Wave Runner Prata Cromo & Neon Anos 2010",
+    title: "Pisante Wave Runner Prata Cromo & Neon OG",
     brand: "Mizuno",
     category: "Pisantes",
     size: "41",
     fit: "Regular",
     measurements: {
-      largura: "Forma padrão 41 BR",
-      comprimento: "Palmilha 27,5 cm",
+      largura: "10 cm",
+      comprimento: "27,5 cm",
+      extra: "Forma 41 BR",
     },
-    condition: "8.8/10 • Amortecimento firme",
+    condition: "9/10 • Amortecimento firme",
     price: 190,
     originalPrice: 260,
     mode: "venda",
@@ -409,7 +487,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     likes: 112,
     image: "/images/peca-pisante-runner.jpg",
     storyBehindPiece:
-      "Ícone máximo do funk paulista e da estética chavosa dos anos 2010. Cabedal refletivo prata com detalhes em neon, higienizado profissionalmente.",
+      "Ícone máximo do funk paulista e dos OutFits Hip-Hop do @brechodimil na República. Cabedal refletivo prata com detalhes em neon, higienizado profissionalmente.",
     storeSlug: "brecho-dimil",
     questions: [],
   },
@@ -444,7 +522,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "p8",
     slug: "acervo-kit-racionais-mcs-1994-zimbabwe-boina",
     code: "#ACV-001",
-    title: "[ACERVO] Camiseta Racionais 1994 (Zimbabwe) + Boina 2002",
+    title: "[ACERVO] Camiseta Racionais 1994 (Zimbabwe) + Boina Kangol",
     brand: "Racionais MCs / Arquivo",
     category: "Acervo (Locação)",
     size: "GG",
@@ -465,7 +543,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     likes: 205,
     image: "/images/peca-acervo-rap.jpg",
     storyBehindPiece:
-      "Patrimônio da memória visual preta e periférica: merch histórica da coletânea de 1994 (Zimbabwe Records) + boina da era 'Nada como Um Dia Após o Outro' (2002). Disponível exclusivamente para locação em videoclipes, cinema, exposições e editoriais.",
+      "Patrimônio da memória visual preta e periférica: merch histórica da coletânea de 1994 (Zimbabwe Records) + boina da era 'Nada como Um Dia Após o Outro' (2002). Disponível para locação em videoclipes, cinema, exposições e editoriais.",
     credits: {
       photo: "@1renas_tinho",
       styling: "@cruela__",
@@ -475,86 +553,199 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
 ];
 
+export const UPCOMING_DROPS: DropScheduleItem[] = [
+  {
+    id: "d1",
+    title: "Drop Linha 15-Prata: Polos & Camisas de Time",
+    storeSlug: "acervodoreliquia",
+    storeHandle: "@acervodoreliquia",
+    dayLabel: "Sexta • 20h00",
+    hoursFromNow: 18,
+    previewCount: 16,
+    themeTag: "Funk Paulista 2010s",
+    accentColor: "#C93B1E",
+  },
+  {
+    id: "d2",
+    title: "Terça Maluca: Fem & Masc + Peças de Styling",
+    storeSlug: "relicario-oz",
+    storeHandle: "@relicari.oz",
+    dayLabel: "Toda Terça • 19h30",
+    hoursFromNow: 29,
+    previewCount: 22,
+    themeTag: "Direto da @estacao.202",
+    accentColor: "#15803D",
+  },
+  {
+    id: "d3",
+    title: "Revival Ed Hardy, Christian Audigier & Jorts",
+    storeSlug: "bonfire-brecho",
+    storeHandle: "@bonfire_brecho",
+    dayLabel: "Sábado • 15h00",
+    hoursFromNow: 42,
+    previewCount: 19,
+    themeTag: "Y2K & Raridades",
+    accentColor: "#B83280",
+  },
+  {
+    id: "d4",
+    title: "OutFits Hip-Hop: Bermudões, Carhartt & Pisantes",
+    storeSlug: "brecho-dimil",
+    storeHandle: "@brechodimil",
+    dayLabel: "Domingo • 17h00",
+    hoursFromNow: 64,
+    previewCount: 14,
+    themeTag: "República SP 💎⛏",
+    accentColor: "#1D4ED8",
+  },
+];
+
+export const CURATED_KITS: CuratedKit[] = [
+  {
+    id: "k1",
+    title: "Kit Rolezinho & Grau Anos 2010",
+    curator: "Styling por @1renas_tinho",
+    vibe: "Pólo listrada de presença + Jaqueta Racing Paddock + Pisante Wave Cromo",
+    productIds: ["p1", "p2", "p6"],
+  },
+  {
+    id: "k2",
+    title: "Kit Esporte & Arquibancada SP",
+    curator: "Curadoria @acervodoreliquia × @brechodimil",
+    vibe: "Nike Dri-Fit Total 90 + Pólo #3 sobreposta + Pisante de mola",
+    productIds: ["p3", "p4", "p6"],
+  },
+  {
+    id: "k3",
+    title: "Kit Quarto de Menina & Noite Y2K",
+    curator: "Direção Criativa @cruela__ × @bonfire_brecho",
+    vibe: "Baby Tee + Mini Saia Jeans anos 2000 com sobreposição Racing",
+    productIds: ["p5", "p2"],
+  },
+];
+
 export const BRANDS_LIST = [
   { name: "Ecko Unltd.", tag: "Polos & Rap 00s", count: 18 },
   { name: "Polo Ralph Lauren", tag: "#3 & Clássicas", count: 24 },
-  { name: "Nike", tag: "Total 90 & Dri-Fit", count: 31 },
+  { name: "Nike", tag: "Total 90 & Air Max", count: 31 },
   { name: "Adidas", tag: "Agasalhos de Time", count: 27 },
+  { name: "Ed Hardy / Y2K", tag: "Bonfire & Audigier", count: 19 },
   { name: "Alpinestars", tag: "Racing & Grau", count: 9 },
   { name: "Mizuno", tag: "Pisantes & Wave", count: 14 },
-  { name: "Y2K Garimpo", tag: "Quarto de Menina", count: 29 },
-  { name: "FUBU", tag: "90s Baggy", count: 11 },
+  { name: "Carhartt & Dickies", tag: "Workwear Dimil", count: 15 },
 ];
 
 export const PRICE_RANGES = [
-  { id: "ate-50", label: "Até R$ 50", subtitle: "Achadinhos e garimpo de giro rápido", min: 0, max: 50 },
-  { id: "50-80", label: "R$ 50 a R$ 80", subtitle: "Polos icônicas e kits Y2K", min: 50, max: 80 },
-  { id: "80-180", label: "R$ 80 a R$ 180", subtitle: "Agasalhos de time e conjuntos", min: 80, max: 180 },
-  { id: "180-plus", label: "Acima de R$ 180", subtitle: "Jaquetas racing, pisantes e raridades", min: 180, max: 9999 },
+  {
+    id: "ate-50",
+    label: "Até R$ 50",
+    subtitle: "Achadinhos e garimpo de giro rápido",
+    min: 0,
+    max: 50,
+  },
+  {
+    id: "50-80",
+    label: "R$ 50 a R$ 80",
+    subtitle: "Polos icônicas e kits Y2K",
+    min: 50,
+    max: 80,
+  },
+  {
+    id: "80-180",
+    label: "R$ 80 a R$ 180",
+    subtitle: "Bermudões, agasalhos e conjuntos",
+    min: 80,
+    max: 180,
+  },
+  {
+    id: "180-plus",
+    label: "Acima de R$ 180",
+    subtitle: "Jaquetas racing, pisantes e raridades",
+    min: 180,
+    max: 9999,
+  },
 ];
 
 export const EDITORIAL_STORIES: EditorialStory[] = [
   {
     slug: "dissecando-o-drop-racionais-1994-memoria-vestida",
     section: "Dissecando o Drop",
-    title: "Racionais MCs (1994–2002): Quando uma camiseta guarda a história inteira da quebrada",
-    subtitle: "Da gravadora Zimbabwe ao álbum 'Nada como Um Dia Após o Outro', como o garimpo preserva o arquivo vivo do rap nacional.",
+    title:
+      "Do Garimpo ao Museu da Língua Portuguesa: quando a roupa guarda a memória viva da quebrada",
+    subtitle:
+      "Da camiseta Racionais 1994 (Zimbabwe Records) aos 4 manequins das ondas do funk paulista montados pelo @acervodoreliquia.",
     readTime: "4 min de leitura",
     date: "Edição #01 • Arquivo Vivo",
-    location: "Zona Leste & Centro, SP",
+    location: "São Mateus, República & Luz (SP)",
     author: "Renato Simões (@1renas_tinho) & Mayara Kerly (@cruela__)",
     coverImage: "/images/peca-acervo-rap.jpg",
-    tags: ["Rap Nacional", "Arquivo 90s", "Pesquisa de Moda"],
+    tags: ["Rap Nacional", "Museu da Língua Portuguesa", "Pesquisa de Moda"],
     excerpt:
-      "Garimpar na periferia nunca foi só sobre comprar roupa barata: é impedir que a nossa própria estética e memória visual sejam apagadas.",
+      "O que começou como uma página simples de desapego virou observatório cultural, figurino de cinema no CineSesc e curadoria de exposição sobre as 4 ondas do funk em SP.",
     paragraphs: [
-      "Quando seguramos uma camiseta original da época da Zimbabwe Records de 1994 ao lado de uma boina que marcou o imaginário de 'Nada como Um Dia Após o Outro' (2002), estamos olhando para documentos históricos que não aparecem nos livros tradicionais de moda brasileira.",
-      "No projeto 'Dissecando o Drop', reunimos acervos parceiros da cena — como @brechodimil, @brechodosbari, @relicari.oz e @gardebrecho_ — para provar que os brechós de quebrada funcionam como verdadeiros museus vivos e descentralizados.",
-      "Por isso criamos dentro do BRECHOZADAS a modalidade ACERVO: peças que não precisam ser vendidas e perdidas de vista, mas que podem vestir novos clipes, curtas-metragens e editoriais dirigidos por criadores da própria periferia.",
+      "Quando seguramos uma camiseta original da época da Zimbabwe Records de 1994 ao lado de uma boina Kangol que marcou o imaginário de 'Nada como Um Dia Após o Outro' (2002), estamos diante de documentos históricos que não aparecem nos livros tradicionais de moda brasileira.",
+      "No quadro 'Dissecando o Drop', conectamos acervos irmãos da Grande São Paulo — @acervodoreliquia, @brechodimil (República), @bonfire_brecho, @relicari.oz, @gardebrecho_ e @brechodosbari (Osasco) — provando que os brechós independentes são museus vivos em movimento.",
+      "Essa pesquisa já levou o vestuário de quebrada para exposições como 'Funk: um grito de ousadia e liberdade' no Museu da Língua Portuguesa, para o movimento @fluxodasreliquias e para telas como o Curta Kinoforum / CineSesc.",
     ],
-    credits: "Acervo colaborativo: @acervodoreliquia, @brechodimil, @relicari.oz • Direção: @1renas_tinho & @cruela__",
-    relatedProductSlugs: ["acervo-kit-racionais-mcs-1994-zimbabwe-boina", "polo-ecko-silver-collection-rinoceronte"],
+    credits:
+      "Acervo colaborativo: @acervodoreliquia, @brechodimil, @relicari.oz, @gardebrecho_, @brechodosbari • Direção: @1renas_tinho & @cruela__",
+    relatedProductSlugs: [
+      "acervo-kit-racionais-mcs-1994-zimbabwe-boina",
+      "polo-ecko-silver-collection-rinoceronte",
+    ],
   },
   {
     slug: "historias-da-quebrada-monotrilho-sao-mateus-rolezinhos",
     section: "Histórias da Quebrada",
-    title: "Das plataformas do Monotrilho São Mateus aos Rolezinhos do ABC: a passarela real de SP",
-    subtitle: "Como as estações de trem, batalhas de rima e bailes criaram a identidade que hoje pauta as grandes revistas.",
+    title:
+      "Da Linha 15-Prata em São Mateus até Osasco e República: o mapa real dos brechós de SP",
+    subtitle:
+      "Como estações de monotrilho, galerias do centro, brechós noturnos e espaços coletivos reinventaram a economia circular periférica.",
     readTime: "5 min de leitura",
     date: "Edição #02 • Território",
-    location: "São Mateus, Vila Prudente & Mauá",
+    location: "Zona Leste, ABC, Centro & Osasco",
     author: "Redação BRECHOZADAS",
     coverImage: "/images/hero-drop.jpg",
-    tags: ["Linha 15-Prata", "Funk Paulista", "ABC & ZL"],
+    tags: ["Linha 15-Prata", "Osasco & ZL", "Economia Circular"],
     excerpt:
-      "Muito antes de qualquer semana de moda olhar para o streetwear nacional, o vagão das seis da tarde e a escadaria da estação já ditavam código de vestimenta.",
+      "De drops clicados nas estações entre Vila Prudente e São Mateus até o garimpo noturno em Osasco e as salas da República: conheça os picos que movimentam a cena.",
     paragraphs: [
-      "Quem viveu os primeiros drops do @acervodoreliquia lembra das fotos clicadas na correria entre uma estação e outra do Monotrilho Linha 15-Prata, de Vila Prudente até São Mateus, ou nas ruas de Mauá e Santo André.",
-      "A polo listrada bem passada, o corta-vento de time europeu, o pisante de mola reluzindo no flash da câmera digital e a troca de ideia rápida na catraca formaram uma linguagem própria — comunitária, criativa e orgulhosa de suas raízes.",
-      "Na seção 'Histórias da Quebrada', abrimos o microfone para estilistas, MCs, donos de brechó e frequentadores contarem as memórias dos picos que construíram a cena urbana de São Paulo.",
+      "Quem acompanha o @acervodoreliquia conhece a mística dos ensaios clicados no Monotrilho de São Mateus e nas ruas de Mauá. Mas essa energia se conecta em rede por toda a metrópole.",
+      "No Centro, salas históricas na Rua Dom José de Barros abrigam o garimpo pesado de hip-hop do @brechodimil. Na Zona Oeste, Osasco pulsa com o espaço @estacao.202 do @relicari.oz, a tradição noturna e cultural desde 2009 do @gardebrecho_ no Pestana e o corre esportivo do @brechodosbari no IAPI.",
+      "O BRECHOZADAS nasce exatamente para unir esses territórios numa plataforma única: fortalecendo cada lojista com tecnologia de ponta sem jamais perder a identidade da rua.",
     ],
-    credits: "Fotografia & Memória: Comunidade @acervodoreliquia & Batalha da Matrix",
-    relatedProductSlugs: ["camiseta-nike-dri-fit-mercurial-anos-2000", "tenis-runner-wave-prata-neon-anos-2010"],
+    credits:
+      "Mapeamento Cultural: Rede BRECHOZADAS (ZL, ABC, Centro & Osasco)",
+    relatedProductSlugs: [
+      "camiseta-nike-dri-fit-mercurial-anos-2000",
+      "tenis-runner-wave-prata-neon-anos-2010",
+    ],
   },
   {
     slug: "dissecando-o-drop-quarto-de-menina-cybershot-orkut",
     section: "Dissecando o Drop",
-    title: "Quarto de Menina: Cybershot, estampa de zebra, Orkut e o protagonismo feminino no funk",
-    subtitle: "Por trás do editorial em parceria com @bonfire_brecho que resgatou a estética anos 2000 das meninas da periferia.",
+    title:
+      "Quarto de Menina & Revival Y2K: Cybershot, Ed Hardy e o olhar feminino na direção criativa",
+    subtitle:
+      "Por trás da estética anos 2000 que une @cruela__, @bonfire_brecho e toda uma geração de criadoras da periferia.",
     readTime: "3 min de leitura",
     date: "Edição #03 • Estética Y2K",
-    location: "Zona Leste, SP",
+    location: "São Paulo, SP",
     author: "Mayara Kerly (@cruela__)",
     coverImage: "/images/editorial-quebrada.jpg",
-    tags: ["Y2K", "Protagonismo Feminino", "Editorial"],
+    tags: ["Y2K", "Ed Hardy", "Direção Criativa"],
     excerpt:
-      "Recriar o quarto com pôsteres na parede, telefone com fio e câmera compacta foi um jeito de celebrar a autoestima e a inventividade das meninas de quebrada.",
+      "Muito antes do termo 'Y2K' virar tendência global, as meninas das periferias brasileiras já criavam códigos visuais próprios que hoje inspiram editoriais e videoclipes.",
     paragraphs: [
-      "Muito do que hoje o mercado internacional chama de 'Y2K' já era dominado com muito mais personalidade pelas meninas das periferias brasileiras nos anos 2000: a baby tee customizada, a argola marcante, o jeans de cintura baixa e o gloss sempre no bolso.",
-      "Em parceria com brechós comandados por mulheres da cena, conectamos memória afetiva com economia circular — fortalecendo quem garimpa, modela, fotografa e dirige arte dentro do nosso próprio território.",
+      "Recriar o quarto com pôsteres na parede, câmera digital compacta, baby tees, jeans de cintura baixa e peças icônicas de Christian Audigier / Ed Hardy garimpadas pelo @bonfire_brecho é celebrar a inventividade estética das mulheres da cena.",
+      "De quadros na KondZilla ('Uma palavra - Uma visão') até a curadoria do @fluxodasreliquias, o styling periférico mostra que vestir é narrar nossa própria história em primeira pessoa.",
     ],
-    credits: "Direção Criativa & Styling: @cruela__ • Acervo Parceiro: @bonfire_brecho",
-    relatedProductSlugs: ["conjunto-quarto-de-menina-y2k-baby-tee-denim", "jaqueta-racing-alpinestars-vintage"],
+    credits:
+      "Direção Criativa & Pesquisa: @cruela__ • Acervo Parceiro: @bonfire_brecho",
+    relatedProductSlugs: [
+      "conjunto-quarto-de-menina-y2k-baby-tee-denim",
+      "jaqueta-racing-alpinestars-vintage",
+    ],
   },
 ];
 
@@ -565,8 +756,8 @@ export const SCENE_NETWORK: SceneMember[] = [
     handle: "@cruela__",
     role: "Styling & Direção",
     region: "Zona Leste & ABC • SP",
-    bio: "Pesquisadora de moda periférica, cofundadora do @acervodoreliquia e diretora criativa para videoclipes, cinema e editoriais.",
-    tags: ["Personal Styling", "Direção de Arte", "Figurino Funk/Rap"],
+    bio: "Criação e pesquisa no @acervodoreliquia e curadora em @fluxodasreliquias. Direção criativa, comunicação (collabs KondZilla / Look do Cria) e personal styling.",
+    tags: ["Direção Criativa", "@fluxodasreliquias", "Personal Styling"],
     availableForCollab: true,
   },
   {
@@ -575,28 +766,28 @@ export const SCENE_NETWORK: SceneMember[] = [
     handle: "@1renas_tinho",
     role: "Styling & Direção",
     region: "São Mateus & Mauá • SP",
-    bio: "Curador de acervo, fotógrafo de rua e pesquisador da estética anos 2000/2010. Conecta brechós a produções audiovisuais.",
-    tags: ["Curadoria", "Fotografia Flash", "Pesquisa Cultural"],
+    bio: "Cofundador do @acervodoreliquia e fotógrafo (@abencoado_fotos2k26). Curadoria de exposição no Museu da Língua Portuguesa e figurino para cinema (CineSesc / Kinoforum).",
+    tags: ["Figurino Cinema", "Pesquisa Funk SP", "Fotografia"],
     availableForCollab: true,
   },
   {
     id: "s3",
-    name: "Feira Fluxo das Relíquias",
-    handle: "@acervodoreliquia",
+    name: "Fluxo das Relíquias & Estação 202",
+    handle: "@fluxodasreliquias",
     role: "Evento / Feira",
-    region: "Itinerante • ZL & ABC Paulista",
-    bio: "Encontro presencial reunindo mais de 15 brechós de quebrada, DJs de funk/rap, exposição de peças raras e flash photoshoot.",
-    tags: ["Inscrições Abertas p/ Brechós", "Economia Circular", "Entrada Grátis"],
+    region: "SP (ZL, Centro & Osasco)",
+    bio: "Mostras culturais, encontros de brechós independentes, música e exposições conectando acervos da Zona Leste, ABC, República e Osasco.",
+    tags: ["Exposição Cultural", "Encontro de Brechós", "Aberto p/ Cena"],
     availableForCollab: true,
   },
   {
     id: "s4",
-    name: "Coletivo Lente de Rua",
-    handle: "@lentedequebrada_sp",
-    role: "Foto & Handcam",
-    region: "Grande São Paulo",
-    bio: "Dupla de fotógrafos e videomakers especializada em ensaios de drop para brechós independentes com Cybershot, VHS e luz natural.",
-    tags: ["Fotos p/ Brechós", "Reels de Drop", "Preços Acessíveis p/ Cena"],
+    name: "Kasa Gardê & Galeria Luneta",
+    handle: "@gardebrecho_",
+    role: "Evento / Feira",
+    region: "Pestana • Osasco, SP",
+    bio: "Espaço cultural noturno (Qui a Dom) unindo garimpo vintage desde 2009, oficinas criativas, arte independente e gastronomia vegana.",
+    tags: ["Brechó Noturno", "Oficinas", "Galeria de Arte"],
     availableForCollab: true,
   },
 ];
