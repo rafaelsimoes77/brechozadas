@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   AlertOctagon,
   Server,
+  Database,
+  ExternalLink,
 } from "lucide-react";
 import type { AuditLogEntry } from "@/lib/security";
 
@@ -22,22 +24,46 @@ interface AuditResponse {
   logs: AuditLogEntry[];
 }
 
+interface DbStatusResponse {
+  success: boolean;
+  database: {
+    provider: string;
+    isConfigured: boolean;
+    status: string;
+    latencyMs?: number;
+    message: string;
+    lastUpdated?: string;
+  };
+  metrics: {
+    productsCount: number;
+    storesCount: number;
+    ordersCount: number;
+    auditLogsCount: number;
+  };
+}
+
 export default function SegurancaAuditoriaPage() {
   const [audit, setAudit] = useState<AuditResponse | null>(null);
+  const [dbStatus, setDbStatus] = useState<DbStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadAudit = async () => {
+  const loadData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/audit", { cache: "no-store" });
-      const data = await res.json();
-      setAudit(data);
+      const [resAudit, resDb] = await Promise.all([
+        fetch("/api/audit", { cache: "no-store" }),
+        fetch("/api/db-status", { cache: "no-store" }),
+      ]);
+      const dataAudit = await resAudit.json();
+      const dataDb = await resDb.json();
+      setAudit(dataAudit);
+      setDbStatus(dataDb);
     } catch {}
     setLoading(false);
   };
 
   useEffect(() => {
-    loadAudit();
+    loadData();
   }, []);
 
   return (
@@ -83,11 +109,56 @@ export default function SegurancaAuditoriaPage() {
             <span>Eventos auditados: <strong>{audit?.totalEvents || 1}</strong></span>
             <button
               type="button"
-              onClick={loadAudit}
+              onClick={loadData}
               className="inline-flex items-center gap-1 text-neon font-bold hover:underline"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Revalidar Agora
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Status da Persistência de Dados (Supabase PostgreSQL / Fallback) */}
+      <section className="bg-white rounded-3xl border border-concrete-300 p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+              dbStatus?.database?.isConfigured
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-concrete-200 text-ink"
+            }`}>
+              <Database className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h3 className="font-display font-extrabold text-lg text-ink">
+                  Persistência Cloud: {dbStatus?.database?.isConfigured ? "Supabase PostgreSQL" : "Local JSON (Fallback Ativo)"}
+                </h3>
+                {dbStatus?.database?.isConfigured ? (
+                  <span className="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Conectado ({dbStatus.database.latencyMs || 0}ms)
+                  </span>
+                ) : (
+                  <span className="bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                    Aguardando chaves na Vercel
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-concrete-500 leading-relaxed max-w-2xl">
+                {dbStatus?.database?.message || "Carregando status do banco de dados..."}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href="https://supabase.com"
+              target="_blank"
+              rel="noreferrer"
+              className="h-9 px-3.5 rounded-full border border-concrete-300 hover:border-ink text-xs font-bold inline-flex items-center gap-1.5 transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Acessar Supabase
+            </a>
           </div>
         </div>
       </section>

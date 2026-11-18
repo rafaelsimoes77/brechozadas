@@ -147,8 +147,19 @@ async function main() {
   const owner = me.json.login;
   console.log(`✅ Conectado como @${owner}!`);
 
-  // Salva localmente em .env.local (ignorado pelo .gitignore) para proximos deploys de 1 clique
-  await fs.writeFile(envPath, `GITHUB_TOKEN=${token}\n`, "utf-8");
+  // Preserva variaveis existentes no .env.local (como Supabase) e atualiza GITHUB_TOKEN
+  try {
+    let existing = "";
+    if (fsSync.existsSync(envPath)) {
+      existing = await fs.readFile(envPath, "utf-8");
+    }
+    if (existing.includes("GITHUB_TOKEN=")) {
+      existing = existing.replace(/^GITHUB_TOKEN=.*$/m, `GITHUB_TOKEN=${token}`);
+    } else {
+      existing = `GITHUB_TOKEN=${token}\n` + existing;
+    }
+    await fs.writeFile(envPath, existing, "utf-8");
+  } catch {}
 
   // Verifica se o repositorio ja existe; se nao, cria com auto_init: true
   let repoCheck = await ghFetch(`/repos/${owner}/${repoName}`, token);

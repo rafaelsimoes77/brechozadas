@@ -665,26 +665,26 @@
   ],
   "auditLogs": [
     {
-      "id": "aud-8df6c124",
-      "timestamp": "2026-11-18T07:09:06.608Z",
+      "id": "aud-71ebfb53",
+      "timestamp": "2026-11-18T12:15:36.501Z",
       "action": "STORE_UPDATED",
       "actor": "@acervodoreliquia",
       "target": "/brecho/acervodoreliquia",
       "details": "Ecossistema de 6 brechós parceiros verificado.",
       "ipAnonymized": "ip-0852daa042",
-      "prevHash": "fd49f456b136241b7a31801298f73103b441a693faf2b04794d872caaa3dda69",
-      "integrityHash": "499c54490a40483ddb4e7bc2da25c16d67355274659496d807baaf9846db155d"
+      "prevHash": "d8043af50f5258612ade278bccee11b28481a7e4a98d022e9d16f6158a8b2575",
+      "integrityHash": "96ab37986b1596fdc60f4a2bca30ad711f5a22bdcd01a7832a8fc9bed3c0c4ba"
     },
     {
-      "id": "aud-be860fd5",
-      "timestamp": "2026-11-18T07:09:06.602Z",
+      "id": "aud-45298496",
+      "timestamp": "2026-11-18T12:15:36.497Z",
       "action": "SYSTEM_GENESIS",
       "actor": "BRECHOZADAS Security Core",
       "target": "ledger/v2",
       "details": "Inicialização segura do banco V2 com 6 brechós da cena.",
       "ipAnonymized": "ip-190a32d7f8",
       "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "integrityHash": "fd49f456b136241b7a31801298f73103b441a693faf2b04794d872caaa3dda69"
+      "integrityHash": "d8043af50f5258612ade278bccee11b28481a7e4a98d022e9d16f6158a8b2575"
     }
   ]
 }

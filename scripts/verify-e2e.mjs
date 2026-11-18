@@ -65,6 +65,7 @@ async function main() {
     "upload",
     "scene",
     "audit",
+    "db-status",
   ];
   for (const api of apiRoutes) {
     assert(
